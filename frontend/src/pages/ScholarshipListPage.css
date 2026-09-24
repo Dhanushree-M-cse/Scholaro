@@ -1,0 +1,12 @@
+.scholarships-page { background: var(--color-bg); min-height: 100vh; padding-bottom: var(--space-8); }
+.scholarships-container { max-width: var(--container-max-width); margin: 0 auto; padding: 0 var(--space-4); }
+.filters-bar { display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-4); margin-bottom: var(--space-6); }
+@media(max-width: 600px) { .filters-bar { grid-template-columns: 1fr; } }
+.scholarships-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: var(--space-6); }
+.scholarship-card { height: 100%; }
+.scholarship-card h3 { margin: var(--space-3) 0 var(--space-1); font-size: 1.1rem; }
+.description { color: var(--color-text-secondary); font-size: 0.9rem; margin: var(--space-3) 0; min-height: 40px; }
+.tags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-4); }
+.tag { background: var(--color-primary-light); color: var(--color-primary-dark); padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 500; }
+.card-actions { display: flex; gap: var(--space-2); margin-top: auto; }
+.card-actions button { flex: 1; }

@@ -1,0 +1,5 @@
+.how-page { min-height: 100vh; background: var(--color-bg); padding-bottom: var(--space-10); }
+.how-container { max-width: 800px; margin: 0 auto; padding: var(--space-6) var(--space-4); }
+.intro { font-size: 1.1rem; line-height: 1.6; color: var(--color-text-secondary); margin-bottom: var(--space-8); }
+.steps-list { display: flex; flex-direction: column; gap: var(--space-4); }
+.how-step h3 { color: var(--color-primary-dark); margin-bottom: var(--space-2); }

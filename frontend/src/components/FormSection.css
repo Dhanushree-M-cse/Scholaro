@@ -1,0 +1,53 @@
+.form-section {
+  padding-bottom: var(--space-8);
+  margin-bottom: var(--space-8);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.form-section--no-border {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.form-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.form-section-header {
+  margin-bottom: var(--space-6);
+}
+
+.form-section-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.form-section-description {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+  margin: 0;
+}
+
+.form-section-body {
+  display: grid;
+  gap: var(--space-5);
+}
+
+/* Common helper: two-column grid for form rows */
+.form-row-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-5);
+}
+
+.form-row-3col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-5);
+}

@@ -1,0 +1,111 @@
+.progress-stepper {
+  width: 100%;
+  padding: var(--space-4) 0;
+}
+
+.stepper-list {
+  list-style: none;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  position: relative;
+}
+
+.stepper-step {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+}
+
+.stepper-step:last-child {
+  flex: 0 0 auto;
+}
+
+/* Connector line between steps */
+.stepper-connector {
+  position: absolute;
+  left: -50%;
+  top: 18px;
+  width: 100%;
+  height: 2px;
+  background-color: var(--color-border);
+  transform: translateX(-50%);
+}
+
+.stepper-connector--filled {
+  background-color: var(--color-primary);
+}
+
+.stepper-step-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  width: 100%;
+}
+
+/* Circle indicator */
+.stepper-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
+  transition: all var(--transition-normal);
+  position: relative;
+  z-index: 2;
+}
+
+/* States */
+.stepper-step--completed .stepper-circle {
+  background-color: var(--color-primary);
+  color: white;
+  border: 2px solid var(--color-primary);
+}
+
+.stepper-step--current .stepper-circle {
+  background-color: white;
+  border: 2.5px solid var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: 0 0 0 4px var(--color-primary-subtle);
+}
+
+.stepper-step--upcoming .stepper-circle {
+  background-color: white;
+  border: 2px solid var(--color-border);
+  color: var(--color-text-tertiary);
+}
+
+.stepper-number {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Labels */
+.stepper-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  max-width: 88px;
+  line-height: 1.3;
+  transition: color var(--transition-fast);
+}
+
+.stepper-step--completed .stepper-label {
+  color: var(--color-primary-dark);
+}
+
+.stepper-step--current .stepper-label {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.stepper-step--upcoming .stepper-label {
+  color: var(--color-text-tertiary);
+}

@@ -1,0 +1,15 @@
+# Dependency directories
+node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Uploads
+uploads/*
+!uploads/.gitkeep
+
+# Logs & System
+*.log
+.DS_Store

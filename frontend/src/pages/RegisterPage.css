@@ -1,0 +1,6 @@
+.register-page { min-height: calc(100vh - var(--navbar-height)); display: flex; align-items: center; justify-content: center; padding: var(--space-4); background: var(--color-bg); }
+.register-card { max-width: 500px; width: 100%; }
+.register-header { text-align: center; margin-bottom: var(--space-6); }
+.submit-btn { margin-top: var(--space-4); margin-bottom: var(--space-4); }
+.login-link { text-align: center; color: var(--color-text-secondary); font-size: 0.875rem; }
+.login-link a { color: var(--color-primary); font-weight: 600; text-decoration: none; }

@@ -1,0 +1,6 @@
+.eligibility-layout { background: var(--color-bg); min-height: 100vh; }
+.eligibility-container { max-width: 860px; margin: 0 auto; padding: var(--space-6) var(--space-4); }
+.stepper-wrapper { margin-bottom: var(--space-8); }
+.step-content { background: var(--color-surface); border-radius: var(--radius-lg); padding: var(--space-8); box-shadow: var(--shadow-sm); }
+@media(max-width: 640px) { .step-content { padding: var(--space-4); } }
+.step-actions { display: flex; justify-content: space-between; margin-top: var(--space-8); padding-top: var(--space-6); border-top: 1px solid var(--color-border); }

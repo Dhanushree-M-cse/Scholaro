@@ -1,0 +1,31 @@
+.table-container {
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.custom-table th, .custom-table td {
+  padding: var(--space-4);
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+.custom-table th {
+  background: var(--color-bg);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+.custom-table tbody tr:hover {
+  background: var(--color-primary-light);
+}
+.table-loading, .table-empty {
+  padding: var(--space-8);
+  text-align: center;
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}

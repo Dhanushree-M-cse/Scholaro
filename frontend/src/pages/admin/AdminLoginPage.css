@@ -1,0 +1,7 @@
+.admin-login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--color-primary-darker); padding: var(--space-4); }
+.admin-login-card { max-width: 400px; width: 100%; }
+.admin-title { text-align: center; color: var(--color-primary); margin-bottom: var(--space-6); font-size: 1.5rem; }
+.text-center { text-align: center; }
+.text-sm { font-size: 0.875rem; }
+.mt-4 { margin-top: var(--space-4); }
+.mb-4 { margin-bottom: var(--space-4); }

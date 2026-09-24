@@ -1,0 +1,8 @@
+.review-container h2 { margin-bottom: var(--space-6); color: var(--color-text-primary); }
+.review-section-card { margin-bottom: var(--space-4); }
+.review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-2); }
+.review-header h3 { font-size: 1.1rem; color: var(--color-primary-dark); }
+.review-data-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); }
+.review-data-item { display: flex; flex-direction: column; }
+.review-data-item .label { font-size: 0.8rem; color: var(--color-text-tertiary); text-transform: capitalize; }
+.review-data-item .value { font-weight: 500; color: var(--color-text-primary); }

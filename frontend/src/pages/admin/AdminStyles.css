@@ -1,0 +1,11 @@
+.admin-layout { display: flex; min-height: 100vh; background: var(--color-bg); }
+.admin-sidebar { width: 250px; background: var(--color-primary-darker); color: white; padding: var(--space-6); display: flex; flex-direction: column; }
+.admin-sidebar h2 { margin-bottom: var(--space-10); font-size: 1.5rem; }
+.admin-sidebar nav { display: flex; flex-direction: column; gap: var(--space-2); flex-grow: 1; }
+.admin-sidebar a { color: var(--color-text-tertiary); text-decoration: none; padding: var(--space-3); border-radius: var(--radius-md); transition: background 0.2s; }
+.admin-sidebar a:hover, .admin-sidebar a.active { background: rgba(255,255,255,0.1); color: white; }
+.logout-btn { background: none; border: none; color: var(--color-error); text-align: left; padding: var(--space-3); cursor: pointer; font-weight: bold; }
+.admin-main { flex: 1; padding: var(--space-8); overflow-y: auto; }
+.admin-main h1 { margin-bottom: var(--space-6); color: var(--color-text-primary); }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-6); }
+.stat-num { font-size: 2.5rem; font-weight: bold; color: var(--color-primary); margin-top: var(--space-2); }
