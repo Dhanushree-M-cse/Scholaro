@@ -5,9 +5,10 @@ const { success, error } = require('../utils/responseHelper');
 
 const register = async (req, res, next) => {
   try {
-    const { full_name, email, mobile, password, role = 'student' } = req.body;
+    const { full_name, name, email, mobile, password, role = 'student' } = req.body;
+    const user_name = full_name || name;
     
-    if (!full_name || !email || !mobile || !password) {
+    if (!user_name || !email || !mobile || !password) {
       return error(res, 'Please provide all required fields');
     }
     
@@ -29,10 +30,10 @@ const register = async (req, res, next) => {
 
     const [result] = await pool.query(
       'INSERT INTO users (full_name, email, mobile, password_hash, role) VALUES (?, ?, ?, ?, ?)',
-      [full_name, email, mobile, password_hash, role]
+      [user_name, email, mobile, password_hash, role]
     );
 
-    const user = { id: result.insertId, full_name, email, mobile, role };
+    const user = { id: result.insertId, full_name: user_name, name: user_name, email, mobile, role };
     return success(res, user, 'Registration successful', 201);
   } catch (err) {
     next(err);
@@ -65,7 +66,7 @@ const login = async (req, res, next) => {
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: '30d' }
     );
 
     const userData = { id: user.id, full_name: user.full_name, email: user.email, role: user.role };
@@ -105,7 +106,7 @@ const adminLogin = async (req, res, next) => {
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: '30d' }
     );
 
     const userData = { id: user.id, full_name: user.full_name, email: user.email, role: user.role };
@@ -115,8 +116,58 @@ const adminLogin = async (req, res, next) => {
   }
 };
 
+const refreshToken = async (req, res, next) => {
+  try {
+    let token = req.body?.token;
+    if (!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+      token = req.headers.authorization.split(' ')[1];
+    }
+
+    if (!token) {
+      return error(res, 'No token provided', 400);
+    }
+
+    // Verify token signature with ignoreExpiration: true so expired tokens from this server can be renewed
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });
+    } catch (err) {
+      return error(res, 'Invalid token signature', 401);
+    }
+
+    if (!decoded || !decoded.id) {
+      return error(res, 'Invalid token payload', 401);
+    }
+
+    // Verify user exists and is active in database
+    const [rows] = await pool.query('SELECT id, full_name, email, role, is_active FROM users WHERE id = ?', [decoded.id]);
+    if (rows.length === 0) {
+      return error(res, 'User no longer exists', 401);
+    }
+
+    const user = rows[0];
+    if (user.is_active === 0) {
+      return error(res, 'Account is inactive', 403);
+    }
+
+    // Issue a fresh 30-day token
+    const newToken = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '30d' }
+    );
+
+    const userData = { id: user.id, full_name: user.full_name, email: user.email, role: user.role };
+    return success(res, { token: newToken, user: userData }, 'Token refreshed successfully');
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   register,
   login,
-  adminLogin
+  adminLogin,
+  refreshToken
 };
+

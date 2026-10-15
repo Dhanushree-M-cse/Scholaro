@@ -5,12 +5,12 @@
    ========================================================================== */
 
 :root {
-  /* --- Brand Color Tokens --- */
-  --color-primary: #4F46E5;        /* Deep Indigo */
-  --color-primary-dark: #3730A3;   /* Dark Indigo */
-  --color-primary-darker: #1E1B4B; /* Deepest Navy/Purple */
-  --color-primary-light: #EEF2FF;  /* Soft Indigo Tint */
-  --color-primary-subtle: #E0E7FF; /* Subtle Indigo Border/Highlight */
+  /* --- Brand Color Tokens (White & Emerald Green Theme) --- */
+  --color-primary: #059669;        /* Emerald Green */
+  --color-primary-dark: #047857;   /* Dark Emerald */
+  --color-primary-darker: #064e3b; /* Deep Forest Green */
+  --color-primary-light: #ecfdf5;  /* Soft Emerald Tint */
+  --color-primary-subtle: #a7f3d0; /* Subtle Emerald Highlight */
 
   /* --- Neutral & Surface Tokens --- */
   --color-bg: #F8FAFC;             /* Canvas Background */
@@ -44,7 +44,7 @@
   /* --- Border & Divider Tokens --- */
   --color-border: #E2E8F0;
   --color-border-dark: #CBD5E1;
-  --color-focus-ring: rgba(79, 70, 229, 0.25);
+  --color-focus-ring: rgba(5, 150, 105, 0.25);
 
   /* --- Typography Specs --- */
   --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEligibility } from '../../context/EligibilityContext';
 import { Input, Select, Button, FileUpload, FormSection, Alert } from '../../components';
@@ -13,13 +13,26 @@ export default function Step1Personal() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleChange = (e) => setData({ ...data, [e.target.id]: e.target.value });
+  useEffect(() => {
+    if (step1 && (step1.full_name || step1.email || step1.dob)) {
+      setData(prev => ({ ...prev, ...step1 }));
+    }
+  }, [step1]);
+
+  const updateData = (updated) => {
+    setData(updated);
+    setStep1(updated);
+  };
+
+  const handleChange = (e) => {
+    updateData({ ...data, [e.target.id]: e.target.value });
+  };
 
   const handleFileChange = (field, file) => {
-    setData((prev) => ({
-      ...prev,
+    updateData({
+      ...data,
       [field]: file ? (file.name || file) : null
-    }));
+    });
   };
 
   const handleNext = (e) => {

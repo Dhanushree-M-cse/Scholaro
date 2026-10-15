@@ -78,15 +78,19 @@ export default function DashboardPage() {
           <CardBody>
             {results.length > 0 ? (
               <div className="results-list">
-                {results.slice(0, 3).map(res => (
-                  <div key={res.scholarship.id} className="result-item">
-                    <div>
-                      <h4>{res.scholarship.name}</h4>
-                      <p>{res.scholarship.provider}</p>
+                {results.slice(0, 3).map(res => {
+                  // Results are flat objects — scholarship data is directly on res
+                  const scholarship = res.scholarship || res;
+                  return (
+                    <div key={scholarship.id || res.id} className="result-item">
+                      <div>
+                        <h4>{scholarship.name || res.name}</h4>
+                        <p>{scholarship.provider || res.provider}</p>
+                      </div>
+                      <StatusBadge status={res.is_eligible ? 'success' : 'warning'} label={res.is_eligible ? 'Eligible' : 'Potential Match'} />
                     </div>
-                    <StatusBadge status={res.is_eligible ? 'success' : 'warning'} label={res.is_eligible ? 'Eligible' : 'Potential Match'} />
-                  </div>
-                ))}
+                  );
+                })}
                 <Link to="/results">View All Matches</Link>
               </div>
             ) : (

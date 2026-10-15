@@ -1,77 +1,547 @@
-.scholarship-detail-page { background: var(--color-bg); min-height: 100vh; padding-bottom: var(--space-8); }
-.detail-header-bg { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); color: white; padding: var(--space-10) var(--space-4); }
-.detail-header-content { max-width: var(--container-max-width); margin: 0 auto; }
-.detail-header-content h1 { font-size: 2.2rem; margin: var(--space-4) 0 var(--space-2); color: #ffffff; line-height: 1.25; }
-.provider-large { font-size: 1.1rem; opacity: 0.9; color: #cbd5e1; }
+/* =============================================================================
+   SCHOLARO SCHOLARSHIP DETAILS PAGE CSS (MATCHES REFERENCE DESIGN)
+   ============================================================================= */
 
-.detail-container { max-width: var(--container-max-width); margin: var(--space-8) auto 0; padding: 0 var(--space-4); display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-8); }
-@media(max-width: 768px) { .detail-container { grid-template-columns: 1fr; } }
-
-.main-content .detail-card { margin-bottom: var(--space-6); background: var(--color-surface); padding: var(--space-6); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid var(--color-border, #e2e8f0); }
-.main-content h2 { color: var(--color-primary-dark, #312e81); margin-bottom: var(--space-4); border-bottom: 2px solid var(--color-primary-light, #e0e7ff); padding-bottom: var(--space-2); font-size: 1.3rem; }
-.main-content p { line-height: 1.6; color: var(--color-text-secondary, #475569); }
-
-.check-list { list-style: none; padding: 0; }
-.check-list li { padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border, #e2e8f0); color: var(--color-text-secondary, #475569); display: flex; align-items: center; }
-.check-list li:before { content: "✓"; color: #10b981; margin-right: 10px; font-weight: bold; }
-
-.official-app-card {
-  border: 2px solid #6366f1;
-  background: #f8fafc;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.12);
-}
-.official-app-card h3 {
-  font-size: 1.3rem;
-  color: #1e1b4b;
-  margin-bottom: 8px;
+.scholarship-detail-page {
+  background-color: #f8fafc;
+  min-height: calc(100vh - 64px);
+  padding: 16px 20px 60px;
+  font-family: var(--font-family, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  color: #0f172a;
 }
 
-.verified-badge-wrapper {
-  margin-top: 4px;
-  margin-bottom: 8px;
+.detail-outer-container {
+  max-width: 1120px;
+  margin: 0 auto;
 }
-.verified-badge {
-  display: inline-flex;
+
+/* -----------------------------------------------------------------------------
+   2. BREADCRUMB
+   ----------------------------------------------------------------------------- */
+.detail-breadcrumb {
+  display: flex;
   align-items: center;
   gap: 6px;
-  background-color: #dcfce7;
-  color: #15803d;
   font-size: 0.825rem;
+  color: #64748b;
+  margin-bottom: 16px;
+}
+
+.detail-breadcrumb a {
+  color: #64748b;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.detail-breadcrumb a:hover {
+  color: #0f172a;
+  text-decoration: underline;
+}
+
+.detail-breadcrumb .separator {
+  color: #94a3b8;
+  font-size: 0.75rem;
+}
+
+.detail-breadcrumb .current {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+/* -----------------------------------------------------------------------------
+   3. SCHOLARSHIP HEADER CARD
+   ----------------------------------------------------------------------------- */
+.scholarship-header-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.header-left {
+  flex: 1;
+}
+
+.badge-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.7rem;
   font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 16px;
+  letter-spacing: 0.5px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+}
+
+.badge-level {
+  background-color: #f0fdf4;
+  color: #059669;
   border: 1px solid #bbf7d0;
 }
 
-.apply-now-btn {
+.badge-eligible {
+  background-color: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+  gap: 4px;
+}
+
+.badge-eligible .check-icon {
+  font-weight: 800;
+  font-size: 0.75rem;
+}
+
+.scholarship-title {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.3;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.02em;
+}
+
+.scholarship-provider {
+  font-size: 0.925rem;
+  color: #64748b;
+  margin: 0;
+  font-weight: 400;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.match-score-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.match-score-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.score-num {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #059669;
+  line-height: 1;
+}
+
+.score-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.sparkle-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #ecfdf5;
+  color: #059669;
   display: flex;
   align-items: center;
   justify-content: center;
-  text-decoration: none;
-  background-color: #2563eb;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-weight: 700;
-  font-size: 1rem;
-  margin-top: 16px;
-  transition: background-color 0.2s;
-}
-.apply-now-btn:hover {
-  background-color: #1d4ed8;
-  color: white;
-  text-decoration: none;
-}
-.full-width-btn {
-  width: 100%;
+  flex-shrink: 0;
 }
 
-.no-url-alert {
-  background: #fef2f2;
+/* -----------------------------------------------------------------------------
+   4. MAIN CONTENT LAYOUT (Two-Column Grid)
+   ----------------------------------------------------------------------------- */
+.detail-two-column-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  align-items: start;
+}
+
+.detail-left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Shared Card Styling */
+.detail-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+}
+
+.card-heading {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 16px 0;
+  letter-spacing: -0.01em;
+}
+
+.card-description {
+  font-size: 0.925rem;
+  line-height: 1.6;
+  color: #475569;
+  margin: 0;
+}
+
+/* -----------------------------------------------------------------------------
+   6. SCHOLARSHIP BENEFITS (3-Grid)
+   ----------------------------------------------------------------------------- */
+.benefits-three-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.benefit-subcard {
+  background-color: #f8fafc;
+  border: 1px solid #f1f5f9;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.benefit-label {
+  font-size: 0.725rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.benefit-value {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 6px 0 4px 0;
+  line-height: 1.25;
+}
+
+.benefit-value.text-accent {
+  color: #059669;
+}
+
+.benefit-subtext {
+  font-size: 0.725rem;
+  color: #94a3b8;
+}
+
+/* -----------------------------------------------------------------------------
+   7. ELIGIBILITY CRITERIA
+   ----------------------------------------------------------------------------- */
+.criteria-list-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.criteria-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 4px;
+}
+
+.criteria-icon {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #059669;
+  flex-shrink: 0;
+}
+
+.criteria-text {
+  font-size: 0.925rem;
+  color: #334155;
+  font-weight: 500;
+}
+
+/* -----------------------------------------------------------------------------
+   8. REQUIRED DOCUMENTS
+   ----------------------------------------------------------------------------- */
+.documents-two-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.document-pill {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.doc-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #059669;
+}
+
+.doc-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+/* -----------------------------------------------------------------------------
+   11. GUIDELINES & IMPORTANT INSTRUCTIONS
+   ----------------------------------------------------------------------------- */
+.guidelines-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.guideline-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.guideline-subheading {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #059669;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.guideline-content {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #475569;
+  margin: 0;
+}
+
+/* -----------------------------------------------------------------------------
+   9. RIGHT COLUMN - READY TO APPLY CARD
+   ----------------------------------------------------------------------------- */
+.detail-right-column {
+  position: sticky;
+  top: 84px;
+}
+
+.apply-sticky-card {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+}
+
+.apply-card-heading {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 6px 0;
+}
+
+.apply-card-subtext {
+  font-size: 0.825rem;
+  color: #64748b;
+  line-height: 1.4;
+  margin: 0 0 20px 0;
+}
+
+.btn-visit-official {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  background-color: #0f172a;
+  color: #ffffff;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-visit-official:hover {
+  background-color: #1e293b;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.btn-visit-official .arrow-icon {
+  font-size: 0.9rem;
+}
+
+.apply-unavailable-msg {
+  background-color: #fef2f2;
   color: #991b1b;
   border: 1px solid #fecaca;
   padding: 10px 14px;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  margin-top: 14px;
+  border-radius: 8px;
+  font-size: 0.825rem;
+  text-align: center;
 }
+
+/* 10. OFFICIAL SOURCE */
+.official-source-block {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.source-verified-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.825rem;
+  font-weight: 700;
+  color: #059669;
+}
+
+.source-icon {
+  font-size: 10px;
+}
+
+.source-check {
+  font-weight: 800;
+}
+
+.source-verified-date {
+  font-size: 0.725rem;
+  color: #94a3b8;
+}
+
+.source-link {
+  font-size: 0.825rem;
+  color: #059669;
+  text-decoration: underline;
+  word-break: break-all;
+}
+
+.source-link:hover {
+  color: #047857;
+}
+
+/* -----------------------------------------------------------------------------
+   LOADING & ERROR STATES
+   ----------------------------------------------------------------------------- */
+.detail-loading-wrapper {
+  padding: 80px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.detail-error-card {
+  max-width: 500px;
+  margin: 60px auto;
+  background: #ffffff;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  padding: 32px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.detail-error-card h2 {
+  font-size: 1.3rem;
+  color: #991b1b;
+  margin-bottom: 8px;
+}
+
+.detail-error-card p {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+.btn-back {
+  background-color: #0f172a;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-back:hover {
+  background-color: #1e293b;
+}
+
+/* -----------------------------------------------------------------------------
+   16. RESPONSIVE DESIGN
+   ----------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .detail-two-column-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-right-column {
+    position: static;
+    order: 2;
+  }
+
+  .scholarship-header-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  .header-right {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .match-score-text {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .benefits-three-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .documents-two-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .scholarship-title {
+    font-size: 1.35rem;
+  }
+
+  .score-num {
+    font-size: 1.75rem;
+  }
+}
+

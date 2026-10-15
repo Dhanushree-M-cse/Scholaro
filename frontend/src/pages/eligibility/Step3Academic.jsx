@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEligibility } from '../../context/EligibilityContext';
 import { Input, Select, Button, FileUpload, FormSection, RadioGroup, Alert } from '../../components';
@@ -15,19 +15,27 @@ export default function Step3Academic() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleChange = (e) => setData({ ...data, [e.target.id]: e.target.value });
-  const handleRadio = (e) => setData({ ...data, [e.target.name]: e.target.value });
+  useEffect(() => {
+    if (step3 && (step3.institution || step3.school_name || step3.course)) {
+      setData(prev => ({ ...prev, ...step3 }));
+    }
+  }, [step3]);
+
+  const updateData = (updated) => {
+    setData(updated);
+    setStep3(updated);
+  };
+
+  const handleChange = (e) => updateData({ ...data, [e.target.id]: e.target.value });
+  const handleRadio = (e) => updateData({ ...data, [e.target.name]: e.target.value });
 
   const handleTypeChange = (e) => {
     const val = e.target.value;
-    setData(prev => ({
-      ...prev,
-      student_type: val
-    }));
+    updateData({ ...data, student_type: val });
   };
 
   const handleFileChange = (field, file) => {
-    setData(prev => ({ ...prev, [field]: file ? (file.name || file) : null }));
+    updateData({ ...data, [field]: file ? (file.name || file) : null });
   };
 
   const handleNext = (e) => {

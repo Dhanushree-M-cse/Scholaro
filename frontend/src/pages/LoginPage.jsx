@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
 import { Card, CardBody, Input, Button, Alert, Loading } from '../components';
@@ -13,6 +13,8 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || location.state?.from || '/dashboard';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,7 +30,7 @@ export default function LoginPage() {
         throw new Error('Invalid login response from server.');
       }
       login(user, token);
-      navigate('/dashboard');
+      navigate(from, { replace: true });
     } catch (err) {
       console.error('Login error:', err);
       const errMsg = err.customMessage || err.response?.data?.message || err.response?.data?.error || err.message || 'Login failed. Please check your credentials.';

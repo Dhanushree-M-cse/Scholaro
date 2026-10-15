@@ -26,20 +26,31 @@ export default function Step2Community() {
     }
   }, [data.state, data.country]);
 
-  const handleChange = (e) => setData({ ...data, [e.target.id]: e.target.value });
-  const handleRadio = (e) => setData({ ...data, [e.target.name]: e.target.value });
+  useEffect(() => {
+    if (step2 && (step2.community || step2.state || step2.district)) {
+      setData(prev => ({ ...prev, ...step2 }));
+    }
+  }, [step2]);
+
+  const updateData = (updated) => {
+    setData(updated);
+    setStep2(updated);
+  };
+
+  const handleChange = (e) => updateData({ ...data, [e.target.id]: e.target.value });
+  const handleRadio = (e) => updateData({ ...data, [e.target.name]: e.target.value });
 
   const handleCountryChange = (e) => {
     const val = e.target.value;
     if (val !== 'India') {
-      setData({ ...data, country: val, state: '', district: '', tn_resident: 'No' });
+      updateData({ ...data, country: val, state: '', district: '', tn_resident: 'No' });
     } else {
-      setData({ ...data, country: 'India', state: 'Tamil Nadu', district: 'Chennai', tn_resident: 'Yes' });
+      updateData({ ...data, country: 'India', state: 'Tamil Nadu', district: 'Chennai', tn_resident: 'Yes' });
     }
   };
 
   const handleFileChange = (field, file) => {
-    setData(prev => ({ ...prev, [field]: file ? (file.name || file) : null }));
+    updateData({ ...data, [field]: file ? (file.name || file) : null });
   };
 
   const handleNext = (e) => {

@@ -1,10 +1,20 @@
 -- =============================================================================
 -- SCHOLARO DATABASE SCHEMA
 -- MySQL 8.0+ | Character Set: utf8mb4
+-- Run this on a fresh Cloud MySQL database to initialize the schema.
+-- After running schema.sql, run seed.sql to populate scholarship data.
 -- =============================================================================
+
+-- Create the database if it doesn't exist (useful for cloud init)
+CREATE DATABASE IF NOT EXISTS `scholaro_db`
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+USE `scholaro_db`;
 
 SET FOREIGN_KEY_CHECKS = 0;
 SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';
+
 
 -- -----------------------------------------------------------------------------
 -- users — Authentication table (student + admin)
@@ -52,11 +62,13 @@ CREATE TABLE IF NOT EXISTS `student_community` (
   `community`             VARCHAR(50),
   `caste_certificate`     VARCHAR(30),
   `domicile`              VARCHAR(50),
+  `country`               VARCHAR(50) DEFAULT 'India',
   `state`                 VARCHAR(50),
   `district`              VARCHAR(80),
   `tn_resident`           TINYINT(1),
   `community_cert_doc`    VARCHAR(255),
   `nativity_cert_doc`     VARCHAR(255),
+  `domicile_cert_doc`     VARCHAR(255),
   `created_at`            DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`            DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -70,6 +82,7 @@ CREATE TABLE IF NOT EXISTS `student_community` (
 CREATE TABLE IF NOT EXISTS `student_academic` (
   `id`                INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id`           INT UNSIGNED NOT NULL,
+  `student_type`      VARCHAR(20) DEFAULT 'college',
   `education_level`   ENUM('school','undergraduate','postgraduate','other') DEFAULT 'undergraduate',
   `course`            VARCHAR(150),
   `branch`            VARCHAR(150),
@@ -78,8 +91,12 @@ CREATE TABLE IF NOT EXISTS `student_academic` (
   `semester`          TINYINT UNSIGNED,
   `course_type`       ENUM('government','private','aided','autonomous'),
   `college_location`  VARCHAR(100),
+  `school_name`       VARCHAR(255),
+  `school_location`   VARCHAR(100),
+  `class_standard`    VARCHAR(20),
   `study_mode`        ENUM('regular','distance','online'),
   `currently_studying` TINYINT(1) DEFAULT 1,
+  `school_id_doc`     VARCHAR(255),
   `college_id_doc`    VARCHAR(255),
   `created_at`        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -103,6 +120,9 @@ CREATE TABLE IF NOT EXISTS `student_performance` (
   `academic_year`       VARCHAR(20),
   `achievements`        TEXT,
   `marksheet_doc`       VARCHAR(255),
+  `tenth_marksheet_doc` VARCHAR(255),
+  `twelfth_marksheet_doc` VARCHAR(255),
+  `current_marksheet_doc` VARCHAR(255),
   `created_at`          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -118,8 +138,14 @@ CREATE TABLE IF NOT EXISTS `student_financial` (
   `user_id`                  INT UNSIGNED NOT NULL,
   `annual_income`            DECIMAL(12,2),
   `income_cert_status`       VARCHAR(30),
+  `father_name`              VARCHAR(150),
   `father_occupation`        VARCHAR(100),
+  `father_income`            DECIMAL(12,2),
+  `father_doc`               VARCHAR(255),
+  `mother_name`              VARCHAR(150),
   `mother_occupation`        VARCHAR(100),
+  `mother_income`            DECIMAL(12,2),
+  `mother_doc`               VARCHAR(255),
   `family_size`              TINYINT UNSIGNED,
   `sibling_count`            TINYINT UNSIGNED DEFAULT 0,
   `siblings_studying`        TINYINT UNSIGNED DEFAULT 0,

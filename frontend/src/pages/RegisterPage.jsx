@@ -45,7 +45,7 @@ export default function RegisterPage() {
           </div>
           {error && <Alert type="error" message={error} />}
           {success && <Alert type="success" message={success} />}
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} action="javascript:void(0);">
             <Input id="full_name" label="Full Name" value={formData.full_name} onChange={handleChange} required />
             <Input id="email" label="Email" type="email" value={formData.email} onChange={handleChange} required />
             <Input id="mobile" label="Mobile" type="number" value={formData.mobile} onChange={handleChange} required />

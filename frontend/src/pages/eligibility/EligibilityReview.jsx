@@ -10,68 +10,57 @@ export default function EligibilityReview() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [errorStep, setErrorStep] = useState(null);
   const [success, setSuccess] = useState('');
 
   const isSchool = step3?.student_type === 'school';
 
   const validateAll = () => {
     // Step 1 Validation
-    if (!step1?.full_name?.trim()) return 'Please enter your Full Name in Step 1.';
-    if (!step1?.dob) return 'Please select your Date of Birth in Step 1.';
-    if (!step1?.gender) return 'Please select your Gender in Step 1.';
-    if (!step1?.aadhaar_doc) return 'Please upload your Aadhaar Card.';
-    if (!step1?.photo_doc) return 'Please upload your Passport Photo.';
-    if (!step1?.signature_doc) return 'Please upload your Signature.';
+    if (!step1?.full_name?.trim()) return { message: 'Please enter your Full Name in Step 1.', step: 1 };
+    if (!step1?.dob) return { message: 'Please select your Date of Birth in Step 1.', step: 1 };
+    if (!step1?.gender) return { message: 'Please select your Gender in Step 1.', step: 1 };
 
     // Step 2 Validation
-    if (!step2?.community) return 'Please select your Community/Category in Step 2.';
-    if (!step2?.country) return 'Please select your Country in Step 2.';
+    if (!step2?.community) return { message: 'Please select your Community / Category in Step 2.', step: 2 };
+    if (!step2?.country) return { message: 'Please select your Country in Step 2.', step: 2 };
     if (step2?.country === 'India') {
-      if (!step2?.state) return 'Please select your State in Step 2.';
-      if (!step2?.district) return 'Please select your District in Step 2.';
-    }
-    if (['BC', 'MBC', 'DNC', 'SC', 'ST'].includes(step2?.community) && step2?.caste_cert_status === 'Available' && !step2?.community_cert_doc) {
-      return `Please upload your Community Certificate for category ${step2.community}.`;
+      if (!step2?.state) return { message: 'Please select your State in Step 2.', step: 2 };
+      if (!step2?.district) return { message: 'Please select your District in Step 2.', step: 2 };
     }
 
     // Step 3 Validation
     if (isSchool) {
-      if (!step3?.school_name?.trim()) return 'Please enter your School Name in Step 3.';
-      if (!step3?.class_standard) return 'Please select your Class/Standard in Step 3.';
-      if (!step3?.school_id_doc) return 'Please upload your School ID / Bonafide Certificate.';
+      if (!step3?.school_name?.trim()) return { message: 'Please enter your School Name in Step 3.', step: 3 };
+      if (!step3?.class_standard) return { message: 'Please select your Class / Standard in Step 3.', step: 3 };
     } else {
-      if (!step3?.institution?.trim()) return 'Please enter your College Name in Step 3.';
-      if (!step3?.course?.trim()) return 'Please enter your Course / Degree in Step 3.';
-      if (!step3?.branch?.trim()) return 'Please enter your Branch / Department in Step 3.';
-      if (!step3?.college_id_doc) return 'Please upload your College ID / Bonafide Certificate.';
+      if (!step3?.institution?.trim()) return { message: 'Please enter your College / Institution Name in Step 3.', step: 3 };
+      if (!step3?.course?.trim()) return { message: 'Please enter your Course / Degree in Step 3.', step: 3 };
+      if (!step3?.branch?.trim()) return { message: 'Please enter your Branch / Department in Step 3.', step: 3 };
     }
 
     // Step 4 Validation
     if (!isSchool) {
-      if (!step4?.tenth_percentage) return 'Please enter your 10th Percentage in Step 4.';
-      if (!step4?.tenth_marksheet_doc) return 'Please upload your 10th/SSLC Marksheet.';
-      if (step4?.twelfth_percentage && !step4?.twelfth_marksheet_doc) {
-        return 'Please upload your 12th/HSC Marksheet.';
+      if (!step4?.tenth_percentage && !step4?.current_cgpa) {
+        return { message: 'Please enter your 10th Percentage or Current CGPA in Step 4.', step: 4 };
       }
-      if (!step4?.current_cgpa) return 'Please enter your Current CGPA in Step 4.';
-      if (!step4?.current_marksheet_doc) return 'Please upload your Current Semester Marksheet.';
     } else {
-      if (!step4?.current_marksheet_doc) return 'Please upload your Current Academic Marksheet / Report Card.';
+      if (!step4?.current_cgpa && !step4?.tenth_percentage) {
+        return { message: 'Please enter your current academic marks or percentage in Step 4.', step: 4 };
+      }
     }
 
     // Step 5 Validation
-    if (!step5?.annual_income) return 'Please enter your Annual Family Income in Step 5.';
-    if (!step5?.father_name?.trim()) return 'Please enter your Father Name in Step 5.';
-    if (!step5?.mother_name?.trim()) return 'Please enter your Mother Name in Step 5.';
-    if (step5?.income_cert_status === 'Available' && !step5?.income_cert_doc) {
-      return 'Please upload your Income Certificate.';
+    if (step5?.annual_income === '' || step5?.annual_income === null || step5?.annual_income === undefined) {
+      return { message: 'Please enter your Annual Family Income in Step 5.', step: 5 };
     }
+    if (!step5?.father_name?.trim()) return { message: 'Please enter your Father / Guardian Name in Step 5.', step: 5 };
+    if (!step5?.mother_name?.trim()) return { message: 'Please enter your Mother / Guardian Name in Step 5.', step: 5 };
 
     // Step 6 Validation
     if (step6?.has_bank_account === 'Yes') {
-      if (!step6?.account_holder_name?.trim()) return 'Please enter the Bank Account Holder Name in Step 6.';
-      if (!step6?.bank_name?.trim()) return 'Please enter the Bank Name in Step 6.';
-      if (!step6?.passbook_doc) return 'Please upload your Bank Passbook Front Page.';
+      if (!step6?.account_holder_name?.trim()) return { message: 'Please enter the Bank Account Holder Name in Step 6.', step: 6 };
+      if (!step6?.bank_name?.trim()) return { message: 'Please enter the Bank Name in Step 6.', step: 6 };
     }
 
     return null;
@@ -84,130 +73,154 @@ export default function EligibilityReview() {
 
     const valErr = validateAll();
     if (valErr) {
-      setError(valErr);
+      setError(valErr.message || valErr);
+      setErrorStep(valErr.step || null);
+      setTimeout(() => {
+        const el = document.getElementById('review-error-box') || document.getElementById('top-error-box');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 50);
       return;
     }
 
     setLoading(true);
 
+    const toNum = (v, def = null) => {
+      if (v === '' || v === null || v === undefined) return def;
+      const n = Number(v);
+      return isNaN(n) ? def : n;
+    };
+
     const payload = {
       personal: {
-        full_name: step1.full_name,
-        dob: step1.dob,
-        gender: step1.gender,
-        mobile: step1.mobile,
-        email: step1.email,
-        religion: step1.religion,
-        marital_status: step1.marital_status,
-        aadhaar_doc: step1.aadhaar_doc,
-        photo_doc: step1.photo_doc,
-        signature_doc: step1.signature_doc
+        full_name: step1.full_name?.trim() || '',
+        dob: step1.dob || null,
+        gender: step1.gender || '',
+        mobile: step1.mobile || '',
+        email: step1.email || '',
+        religion: step1.religion || '',
+        marital_status: step1.marital_status || '',
+        aadhaar_doc: step1.aadhaar_doc || null,
+        photo_doc: step1.photo_doc || null,
+        signature_doc: step1.signature_doc || null
       },
       community: {
-        community: step2.community,
-        caste_certificate: step2.caste_cert_status,
-        country: step2.country,
-        domicile: step2.domicile,
-        state: step2.state,
-        district: step2.district,
+        community: step2.community || '',
+        caste_certificate: step2.caste_cert_status || 'Available',
+        country: step2.country || 'India',
+        domicile: step2.domicile || 'Tamil Nadu',
+        state: step2.state || 'Tamil Nadu',
+        district: step2.district || '',
         tn_resident: step2.tn_resident === 'Yes' ? 1 : 0,
-        community_cert_doc: step2.community_cert_doc,
-        domicile_cert_doc: step2.domicile_cert_doc
+        community_cert_doc: step2.community_cert_doc || null,
+        domicile_cert_doc: step2.domicile_cert_doc || null
       },
       academic: {
-        student_type: step3.student_type,
-        school_name: step3.school_name,
-        school_location: step3.school_location,
-        class_standard: step3.class_standard,
-        education_level: isSchool ? 'school' : 'undergraduate',
-        course: step3.course,
-        branch: step3.branch,
-        institution: step3.institution || step3.school_name,
-        year_of_study: step3.year_of_study ? parseInt(step3.year_of_study) : null,
-        semester: step3.semester ? parseInt(step3.semester) : null,
-        course_type: step3.course_type?.toLowerCase() || 'government',
-        college_location: step3.college_location || step3.school_location,
+        student_type: step3.student_type || 'college',
+        school_name: step3.school_name || null,
+        school_location: step3.school_location || null,
+        class_standard: step3.class_standard || null,
+        education_level: isSchool ? 'school' : (step3.education_level || 'undergraduate').toLowerCase(),
+        course: step3.course || '',
+        branch: step3.branch || '',
+        institution: step3.institution || step3.school_name || '',
+        year_of_study: toNum(step3.year_of_study, null),
+        semester: toNum(step3.semester, null),
+        course_type: (step3.course_type || 'government').toLowerCase(),
+        college_location: step3.college_location || step3.school_location || '',
         currently_studying: step3.currently_studying === 'Yes' ? 1 : 0,
-        school_id_doc: step3.school_id_doc,
-        college_id_doc: step3.college_id_doc
+        school_id_doc: step3.school_id_doc || null,
+        college_id_doc: step3.college_id_doc || null
       },
       performance: {
-        tenth_percentage: step4.tenth_percentage ? parseFloat(step4.tenth_percentage) : null,
-        twelfth_percentage: step4.twelfth_percentage ? parseFloat(step4.twelfth_percentage) : null,
-        current_cgpa: step4.current_cgpa ? parseFloat(step4.current_cgpa) : null,
-        prev_sem_cgpa: step4.prev_sem_cgpa ? parseFloat(step4.prev_sem_cgpa) : null,
+        tenth_percentage: toNum(step4.tenth_percentage, null),
+        twelfth_percentage: toNum(step4.twelfth_percentage, null),
+        current_cgpa: toNum(step4.current_cgpa, null),
+        prev_sem_cgpa: toNum(step4.prev_sem_cgpa, null),
         has_backlogs: step4.has_backlogs === 'Yes' ? 1 : 0,
-        backlog_count: step4.backlog_count ? parseInt(step4.backlog_count) : 0,
-        academic_year: step4.academic_year,
-        achievements: step4.achievements,
-        tenth_marksheet_doc: step4.tenth_marksheet_doc,
-        twelfth_marksheet_doc: step4.twelfth_marksheet_doc,
-        current_marksheet_doc: step4.current_marksheet_doc
+        backlog_count: toNum(step4.backlog_count, 0),
+        academic_year: step4.academic_year || '2025-26',
+        achievements: step4.achievements || '',
+        tenth_marksheet_doc: step4.tenth_marksheet_doc || null,
+        twelfth_marksheet_doc: step4.twelfth_marksheet_doc || null,
+        current_marksheet_doc: step4.current_marksheet_doc || null
       },
       financial: {
-        annual_income: step5.annual_income ? parseFloat(step5.annual_income) : 0,
-        income_cert_status: step5.income_cert_status,
-        father_name: step5.father_name,
-        father_occupation: step5.father_occupation,
-        father_income: step5.father_income ? parseFloat(step5.father_income) : null,
-        father_doc: step5.father_doc,
-        mother_name: step5.mother_name,
-        mother_occupation: step5.mother_occupation,
-        mother_income: step5.mother_income ? parseFloat(step5.mother_income) : null,
-        mother_doc: step5.mother_doc,
-        family_size: step5.family_size ? parseInt(step5.family_size) : null,
-        sibling_count: step5.sibling_count ? parseInt(step5.sibling_count) : 0,
-        siblings_studying: step5.siblings_studying ? parseInt(step5.siblings_studying) : 0,
+        annual_income: toNum(step5.annual_income, 0),
+        income_cert_status: step5.income_cert_status || 'Available',
+        father_name: step5.father_name || '',
+        father_occupation: step5.father_occupation || '',
+        father_income: toNum(step5.father_income, null),
+        father_doc: step5.father_doc || null,
+        mother_name: step5.mother_name || '',
+        mother_occupation: step5.mother_occupation || '',
+        mother_income: toNum(step5.mother_income, null),
+        mother_doc: step5.mother_doc || null,
+        family_size: toNum(step5.family_size, null),
+        sibling_count: toNum(step5.sibling_count, 0),
+        siblings_studying: toNum(step5.siblings_studying, 0),
         first_gen_graduate: step5.first_gen_graduate === 'Yes' ? 1 : 0,
-        income_cert_doc: step5.income_cert_doc
+        income_cert_doc: step5.income_cert_doc || null
       },
       bank: {
         has_bank_account: step6.has_bank_account === 'Yes' ? 1 : 0,
-        account_holder_name: step6.account_holder_name,
-        bank_name: step6.bank_name,
+        account_holder_name: step6.account_holder_name || '',
+        bank_name: step6.bank_name || '',
         aadhaar_linked: step6.aadhaar_linked === 'Yes' ? 1 : 0,
         dbt_enabled: step6.dbt_enabled === 'Yes' ? 1 : 0,
-        passbook_doc: step6.passbook_doc
+        passbook_doc: step6.passbook_doc || null
       }
     };
 
     try {
       await studentService.submitEligibility(payload);
-      setSuccess('Eligibility submitted successfully!');
+      setSuccess('Eligibility submitted successfully! Calculating your matched scholarships...');
+      // Clear persistent draft
+      try { localStorage.removeItem('scholaro_eligibility_draft_v3'); } catch {}
       setTimeout(() => {
         navigate('/results');
-      }, 1200);
+      }, 1000);
     } catch (err) {
       console.error('Eligibility Submit Error:', err);
-      const msg = err.customMessage || err.response?.data?.message || err.message || 'Unable to save eligibility. Please try again.';
+      const msg = err.customMessage || err.response?.data?.message || err.message || 'Unable to save eligibility. Please check your network and try again.';
       setError(msg);
       setLoading(false);
+      setTimeout(() => {
+        const el = document.getElementById('review-error-box') || document.getElementById('top-error-box');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 50);
     }
   };
 
   const documentSummary = [
-    { label: 'Aadhaar Card', val: step1?.aadhaar_doc, req: true },
-    { label: 'Passport Photo', val: step1?.photo_doc, req: true },
-    { label: 'Signature', val: step1?.signature_doc, req: true },
-    { label: 'Community Certificate', val: step2?.community_cert_doc, req: step2?.community !== 'OC' },
+    { label: 'Aadhaar Card', val: step1?.aadhaar_doc, req: false },
+    { label: 'Passport Photo', val: step1?.photo_doc, req: false },
+    { label: 'Signature', val: step1?.signature_doc, req: false },
+    { label: 'Community Certificate', val: step2?.community_cert_doc, req: false },
     { label: 'Domicile Proof', val: step2?.domicile_cert_doc, req: false },
-    { label: isSchool ? 'School ID / Bonafide' : 'College ID / Bonafide', val: isSchool ? step3?.school_id_doc : step3?.college_id_doc, req: true },
-    { label: '10th / SSLC Marksheet', val: step4?.tenth_marksheet_doc, req: !isSchool },
+    { label: isSchool ? 'School ID / Bonafide' : 'College ID / Bonafide', val: isSchool ? step3?.school_id_doc : step3?.college_id_doc, req: false },
+    { label: '10th / SSLC Marksheet', val: step4?.tenth_marksheet_doc, req: false },
     { label: '12th / HSC Marksheet', val: step4?.twelfth_marksheet_doc, req: false },
-    { label: isSchool ? 'Current Academic Progress Card' : 'Current Semester Marksheet', val: step4?.current_marksheet_doc, req: true },
-    { label: 'Income Certificate', val: step5?.income_cert_doc, req: step5?.income_cert_status === 'Available' },
+    { label: isSchool ? 'Current Academic Progress Card' : 'Current Semester Marksheet', val: step4?.current_marksheet_doc, req: false },
+    { label: 'Income Certificate', val: step5?.income_cert_doc, req: false },
     { label: 'Father Document', val: step5?.father_doc, req: false },
     { label: 'Mother Document', val: step5?.mother_doc, req: false },
-    { label: 'Bank Passbook', val: step6?.passbook_doc, req: step6?.has_bank_account === 'Yes' }
+    { label: 'Bank Passbook', val: step6?.passbook_doc, req: false }
   ];
 
   return (
     <div className="review-container">
-      <h2>Review Your Information</h2>
-      <p className="text-secondary mb-6">Please carefully verify all your details before final submission.</p>
+      <div className="review-title-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+        <div>
+          <h2 style={{ margin: 0 }}>Review Your Information</h2>
+          <p className="text-secondary" style={{ margin: '4px 0 0 0' }}>Please carefully verify all your details before final submission.</p>
+        </div>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#ecfdf5', color: '#059669', padding: '6px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: '600' }}>
+          <span>✓</span> Auto-saved latest changes
+        </div>
+      </div>
 
-      {error && <Alert type="error" message={error} />}
-      {success && <Alert type="success" message={success} />}
+      {error && <div id="top-error-box" className="mb-4"><Alert type="error" message={error} /></div>}
+      {success && <div className="mb-4"><Alert type="success" message={success} /></div>}
 
       {/* Section 1: Personal Details */}
       <Card className="review-section-card">
@@ -363,10 +376,47 @@ export default function EligibilityReview() {
 
       <Alert type="info" message="Disclaimer: Scholarship matching results are calculated automatically based on your submitted profile against available eligibility rules." />
 
+      {error && (
+        <div id="review-error-box" className="mt-4 mb-4" style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', padding: '16px' }}>
+          <div style={{ color: '#b91c1c', fontWeight: '600', fontSize: '0.95rem' }}>
+            ⚠️ {error}
+          </div>
+          {(error.toLowerCase().includes('authorized') || error.toLowerCase().includes('token') || error.toLowerCase().includes('session') || error.toLowerCase().includes('log in') || error.toLowerCase().includes('login')) ? (
+            <div style={{ marginTop: '12px', background: '#ffffff', borderRadius: '6px', padding: '14px', border: '1px solid #fca5a5' }}>
+              <p style={{ margin: '0 0 10px 0', fontSize: '0.9rem', color: '#374151', lineHeight: '1.4' }}>
+                Your login session has expired. <strong>All your entered information and documents are safely auto-saved in your browser.</strong>
+              </p>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+                <Button
+                  size="small"
+                  onClick={() => navigate('/login', { state: { from: '/eligibility/review' } })}
+                  style={{ background: '#059669', borderColor: '#059669', color: '#fff', fontWeight: '600' }}
+                >
+                  🔑 Log In to Complete Submission →
+                </Button>
+                <span style={{ fontSize: '0.85rem', color: '#6b7280' }}>
+                  (You will return right back to this review page with all details intact)
+                </span>
+              </div>
+            </div>
+          ) : errorStep && (
+            <div style={{ marginTop: '10px' }}>
+              <Button
+                variant="outline"
+                size="small"
+                onClick={() => { goToStep(errorStep); navigate(`/eligibility/step-${errorStep}`); }}
+              >
+                Go to Step {errorStep} to Fix →
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="step-actions mt-6">
         <Button variant="outline" type="button" onClick={() => { goToStep(6); navigate('/eligibility/step-6'); }}>Back</Button>
-        <Button onClick={handleSubmit} disabled={loading}>
-          {loading ? <Loading size="small" text="Submitting..." /> : 'Submit Eligibility'}
+        <Button onClick={handleSubmit} disabled={loading} style={{ minWidth: '180px' }}>
+          {loading ? 'Submitting & Matching...' : 'Submit Eligibility'}
         </Button>
       </div>
     </div>

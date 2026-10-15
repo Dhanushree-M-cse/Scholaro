@@ -14,12 +14,18 @@ const Navbar = ({ isLoggedIn = false, user = null, onLogout }) => {
   const [profileOpen, setProfileOpen] = useState(false);
   const navigate = useNavigate();
 
-  const navLinks = [
-    { label: 'Home', to: '/' },
-    { label: 'Scholarships', to: '/scholarships' },
-    { label: 'How It Works', to: '/how-it-works' },
-    { label: 'About', to: '/about' },
-  ];
+  const navLinks = isLoggedIn
+    ? [
+        { label: 'Dashboard', to: '/dashboard' },
+        { label: 'Scholarships', to: '/scholarships' },
+        { label: 'My Profile', to: '/profile' },
+      ]
+    : [
+        { label: 'Home', to: '/' },
+        { label: 'Scholarships', to: '/scholarships' },
+        { label: 'How It Works', to: '/how-it-works' },
+        { label: 'About', to: '/about' },
+      ];
 
   const handleLogout = () => {
     setProfileOpen(false);
@@ -46,7 +52,7 @@ const Navbar = ({ isLoggedIn = false, user = null, onLogout }) => {
           <Link to="/" className="navbar-brand" aria-label="SCHOLARO Home">
             <span className="navbar-logo" aria-hidden="true">
               <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-                <rect width="32" height="32" rx="8" fill="#4F46E5" />
+                <rect width="32" height="32" rx="8" fill="#059669" />
                 <path d="M8 21l8-10 8 10" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                 <circle cx="16" cy="10" r="2.5" fill="white" />
               </svg>

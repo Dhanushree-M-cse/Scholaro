@@ -54,6 +54,14 @@ const getProfile = async (req, res, next) => {
   }
 };
 
+const NUMERIC_COLS = [
+  'annual_income', 'father_income', 'mother_income', 'family_size',
+  'sibling_count', 'siblings_studying', 'first_gen_graduate',
+  'tenth_percentage', 'twelfth_percentage', 'current_cgpa', 'prev_sem_cgpa',
+  'has_backlogs', 'backlog_count', 'year_of_study', 'semester', 'currently_studying',
+  'tn_resident', 'has_bank_account', 'aadhaar_linked', 'dbt_enabled'
+];
+
 const upsertTable = async (table, data, userId) => {
   if (!data || typeof data !== 'object' || Object.keys(data).length === 0) return;
   
@@ -61,8 +69,19 @@ const upsertTable = async (table, data, userId) => {
   const cleanData = {};
   
   for (const [k, v] of Object.entries(data)) {
-    if (allowed.includes(k) && v !== undefined && v !== null) {
-      cleanData[k] = v;
+    if (allowed.includes(k) && v !== undefined) {
+      if (v === '' || v === 'null' || v === 'undefined') {
+        cleanData[k] = null;
+      } else if (NUMERIC_COLS.includes(k)) {
+        if (v === null) {
+          cleanData[k] = null;
+        } else {
+          const num = Number(v);
+          cleanData[k] = isNaN(num) ? null : num;
+        }
+      } else {
+        cleanData[k] = v;
+      }
     }
   }
 

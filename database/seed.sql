@@ -1,6 +1,11 @@
 -- =============================================================================
 -- SCHOLARO SEED DATA — VERIFIED OFFICIAL GOVERNMENT SCHOLARSHIP SCHEMES
+-- Run this AFTER schema.sql on your Cloud MySQL database.
 -- =============================================================================
+
+USE `scholaro_db`;
+
+
 
 -- Admin user (password: Admin@2026)
 INSERT IGNORE INTO `users` (`full_name`, `email`, `mobile`, `password_hash`, `role`) VALUES

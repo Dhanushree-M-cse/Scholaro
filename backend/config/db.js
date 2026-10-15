@@ -3,7 +3,19 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-const pool = mysql.createPool({
+// Validate required environment variables on startup
+const REQUIRED_DB_VARS = ['DB_HOST', 'DB_USER', 'DB_NAME'];
+const missing = REQUIRED_DB_VARS.filter(v => !process.env[v]);
+
+if (missing.length > 0) {
+  console.error(`❌ CONFIGURATION ERROR: Missing required database environment variables: ${missing.join(', ')}`);
+  console.error('Please set these environment variables before starting the server.');
+  console.error('Refer to backend/.env.example for the required variables.');
+  // Do not crash immediately — allow health endpoint to still respond
+  // but DB queries will fail gracefully
+}
+
+const poolConfig = {
   host: process.env.DB_HOST || 'localhost',
   port: parseInt(process.env.DB_PORT || '3306', 10),
   user: process.env.DB_USER || 'root',
@@ -11,18 +23,29 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME || 'scholaro_db',
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
-});
+  queueLimit: 0,
+  connectTimeout: 10000
+};
+
+// Enable SSL for cloud MySQL providers (PlanetScale, Aiven, Railway, etc.)
+// Set DB_SSL=true in your Render environment variables if your cloud MySQL requires it
+if (process.env.DB_SSL === 'true') {
+  poolConfig.ssl = { rejectUnauthorized: false };
+}
+
+const pool = mysql.createPool(poolConfig);
 
 async function testConnection() {
   try {
     const connection = await pool.getConnection();
     console.log('✅ MySQL Database connected successfully.');
+    console.log(`   Host: ${poolConfig.host}:${poolConfig.port} | DB: ${poolConfig.database}`);
     connection.release();
     return true;
   } catch (error) {
-    console.warn(`⚠️ MySQL Connection Warning: ${error.message}`);
-    console.warn('Note: Ensure MySQL service is running and database exists for full functionality.');
+    console.error(`❌ MySQL Connection Failed: ${error.message}`);
+    console.error(`   Host: ${poolConfig.host}:${poolConfig.port} | DB: ${poolConfig.database}`);
+    console.error('   Make sure DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, and DB_NAME environment variables are set correctly.');
     return false;
   }
 }

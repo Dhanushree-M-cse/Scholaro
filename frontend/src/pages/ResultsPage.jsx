@@ -124,7 +124,7 @@ export default function ResultsPage() {
                       <Button variant="outline" onClick={() => handleSave(scholarship.id || res.id)}>
                         Save
                       </Button>
-                      <Button variant="secondary" onClick={() => navigate(`/scholarship/${scholarship.id || res.id}`)}>
+                      <Button variant="secondary" onClick={() => navigate(`/scholarship/${scholarship.id || res.id}`, { state: { matchScore, isEligible: res.is_eligible } })}>
                         View Details
                       </Button>
                       {isValidUrl(officialUrl) ? (

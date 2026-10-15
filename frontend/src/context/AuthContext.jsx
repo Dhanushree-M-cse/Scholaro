@@ -23,7 +23,17 @@ export const AuthProvider = ({ children }) => {
       }
     }
     setLoading(false);
+
+    const handleRefresh = (e) => {
+      if (e.detail?.token && e.detail?.user) {
+        setToken(e.detail.token);
+        setUser(e.detail.user);
+      }
+    };
+    window.addEventListener('scholaro_session_refreshed', handleRefresh);
+    return () => window.removeEventListener('scholaro_session_refreshed', handleRefresh);
   }, []);
+
 
   const login = useCallback((userData, jwtToken) => {
     setUser(userData);

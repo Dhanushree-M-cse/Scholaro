@@ -147,11 +147,12 @@
 }
 
 .navbar-avatar {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background-color: var(--color-primary);
-  color: white;
+  background-color: #f0fdf4;
+  border: 1.5px solid #059669;
+  color: #059669;
   display: flex;
   align-items: center;
   justify-content: center;

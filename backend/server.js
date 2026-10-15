@@ -8,9 +8,8 @@ const authRoutes = require('./routes/authRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const scholarshipRoutes = require('./routes/scholarshipRoutes');
 const adminRoutes = require('./routes/adminRoutes');
-// Keeping healthRoutes if it exists, or handling inline if not found. We'll just assume it exists.
-// The user prompt said "Keep health route" and "Keep error middleware"
 const healthRoutes = require('./routes/healthRoutes');
+const authController = require('./controllers/authController');
 const { errorHandler, notFoundHandler } = require('./middleware/errorMiddleware');
 
 // Load environment variables
@@ -19,12 +18,53 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware configuration
-app.use(cors({
-  origin: '*',
+// CORS — allow the deployed Vercel frontend via FRONTEND_URL env var
+// In production, set FRONTEND_URL=https://your-app.vercel.app
+// In development, FRONTEND_URL=http://localhost:3000
+const allowedOrigins = [];
+
+if (process.env.FRONTEND_URL) {
+  // Support comma-separated list of origins
+  process.env.FRONTEND_URL.split(',').forEach(u => {
+    const trimmed = u.trim();
+    if (trimmed) allowedOrigins.push(trimmed);
+  });
+}
+
+// Always allow localhost origins in development
+if (process.env.NODE_ENV !== 'production') {
+  allowedOrigins.push('http://localhost:3000');
+  allowedOrigins.push('http://localhost:5173');
+  allowedOrigins.push('http://127.0.0.1:3000');
+  allowedOrigins.push('http://127.0.0.1:5173');
+}
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g. curl, Postman, mobile apps)
+    if (!origin) return callback(null, true);
+    
+    // In non-production mode, allow any localhost / 127.0.0.1 origin regardless of port
+    if (process.env.NODE_ENV !== 'production' && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
+      return callback(null, true);
+    }
+
+    if (allowedOrigins.length === 0) {
+      return callback(null, true);
+    }
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS: Origin ${origin} not allowed`));
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -39,6 +79,17 @@ app.use('/api/student', studentRoutes);
 app.use('/api/scholarships', scholarshipRoutes);
 app.use('/api/admin', adminRoutes);
 
+// Additional fallback aliases for direct /api/register and /api/login endpoints
+app.options('/api/register', (req, res) => res.sendStatus(200));
+app.options('/api/register/', (req, res) => res.sendStatus(200));
+app.post('/api/register', authController.register);
+app.post('/api/register/', authController.register);
+
+app.options('/api/login', (req, res) => res.sendStatus(200));
+app.options('/api/login/', (req, res) => res.sendStatus(200));
+app.post('/api/login', authController.login);
+app.post('/api/login/', authController.login);
+
 // Root route welcome message
 app.get('/', (req, res) => {
   res.json({
@@ -52,12 +103,13 @@ app.get('/', (req, res) => {
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-// Start server (only if not required as a module, or just run it)
+// Start server — bind to 0.0.0.0 for Render/cloud compatibility
 if (require.main === module) {
-  app.listen(PORT, async () => {
+  app.listen(PORT, '0.0.0.0', async () => {
     console.log(`🚀 SCHOLARO Backend running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-    console.log(`👉 Health Check Endpoint: http://localhost:${PORT}/api/health`);
-    
+    console.log(`👉 Health Check: /api/health`);
+    console.log(`🌐 Allowed CORS Origins: ${allowedOrigins.length > 0 ? allowedOrigins.join(', ') : 'All (no FRONTEND_URL set)'}`);
+
     // Test Database Connection
     await testConnection();
   });
