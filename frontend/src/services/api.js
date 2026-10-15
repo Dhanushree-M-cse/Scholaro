@@ -124,7 +124,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       message = 'Your session has expired. Please log in again to save and submit.';
     } else if (error.response?.status === 405) {
-      message = 'Vercel Deployment Notice: Backend API URL (VITE_API_BASE_URL) is not set or backend is not reachable. Please set VITE_API_BASE_URL in your Vercel Environment Variables to your backend API URL (e.g. https://your-backend.onrender.com/api).';
+      message = 'Request method not allowed on this endpoint. Please check the requested API path.';
     } else if (error.code === 'ERR_NETWORK' || !error.response) {
       message = 'Unable to connect to SCHOLARO backend server. Please make sure the backend server is running and accessible.';
     }

@@ -22,14 +22,16 @@ const poolConfig = {
   password: process.env.DB_PASSWORD || '',
   database: process.env.DB_NAME || 'scholaro_db',
   waitForConnections: true,
-  connectionLimit: 10,
+  connectionLimit: process.env.VERCEL ? 5 : 10,
   queueLimit: 0,
-  connectTimeout: 10000
+  connectTimeout: 10000,
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 10000
 };
 
-// Enable SSL for cloud MySQL providers (PlanetScale, Aiven, Railway, etc.)
-// Set DB_SSL=true in your Render environment variables if your cloud MySQL requires it
-if (process.env.DB_SSL === 'true') {
+// Enable SSL for cloud MySQL providers (Aiven, TiDB Cloud, PlanetScale, Railway, etc.)
+// Auto-enabled if DB_SSL=true or if port is 4000 (TiDB Cloud default) or host is remote
+if (process.env.DB_SSL === 'true' || process.env.DB_PORT === '4000' || (process.env.DB_HOST && process.env.DB_HOST !== 'localhost' && process.env.DB_HOST !== '127.0.0.1' && process.env.DB_SSL !== 'false')) {
   poolConfig.ssl = { rejectUnauthorized: false };
 }
 

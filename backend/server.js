@@ -80,23 +80,40 @@ app.use(express.urlencoded({ extended: true }));
 // Serve uploads: internal only
 app.use('/uploads', express.static('uploads'));
 
-// API Routes
+// API Routes (mounted with /api prefix)
 app.use('/api', healthRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/student', studentRoutes);
 app.use('/api/scholarships', scholarshipRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Additional fallback aliases for direct /api/register and /api/login endpoints
+// Direct Aliases (mounted without /api prefix for Vercel serverless rewrites)
+app.use('/', healthRoutes);
+app.use('/auth', authRoutes);
+app.use('/student', studentRoutes);
+app.use('/scholarships', scholarshipRoutes);
+app.use('/admin', adminRoutes);
+
+// Direct register and login aliases
 app.options('/api/register', (req, res) => res.sendStatus(200));
 app.options('/api/register/', (req, res) => res.sendStatus(200));
 app.post('/api/register', authController.register);
 app.post('/api/register/', authController.register);
 
+app.options('/register', (req, res) => res.sendStatus(200));
+app.options('/register/', (req, res) => res.sendStatus(200));
+app.post('/register', authController.register);
+app.post('/register/', authController.register);
+
 app.options('/api/login', (req, res) => res.sendStatus(200));
 app.options('/api/login/', (req, res) => res.sendStatus(200));
 app.post('/api/login', authController.login);
 app.post('/api/login/', authController.login);
+
+app.options('/login', (req, res) => res.sendStatus(200));
+app.options('/login/', (req, res) => res.sendStatus(200));
+app.post('/login', authController.login);
+app.post('/login/', authController.login);
 
 // Root route welcome message
 app.get('/', (req, res) => {

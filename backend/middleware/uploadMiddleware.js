@@ -1,9 +1,20 @@
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
+
+// In serverless environments like Vercel, the local filesystem is read-only except /tmp
+const uploadDir = process.env.VERCEL ? '/tmp/uploads' : path.join(__dirname, '../uploads');
+try {
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+} catch (e) {
+  console.warn('Could not ensure upload directory:', e.message);
+}
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, 'uploads/');
+    cb(null, uploadDir);
   },
   filename(req, file, cb) {
     cb(null, `${Date.now()}-${path.extname(file.originalname)}`);
