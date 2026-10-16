@@ -1,11 +1,58 @@
 import api from './api';
+import { clientStorage, VERIFIED_SCHOLARSHIPS } from './clientStorage';
 
 export const scholarshipService = {
-  getScholarships: (params) => api.get('/scholarships', { params }).then(res => res.data),
-  getScholarship: (id) => api.get(`/scholarships/${id}`).then(res => res.data),
-  // Save/unsave use student routes (protected)
-  saveScholarship: (id) => api.post(`/student/scholarships/${id}/save`).then(res => res.data),
-  unsaveScholarship: (id) => api.delete(`/student/scholarships/${id}/save`).then(res => res.data),
-  // Saved list is a student-protected route
-  getSaved: () => api.get('/student/saved').then(res => res.data),
+  getScholarships: async (params) => {
+    try {
+      const res = await api.get('/scholarships', { params });
+      return res.data;
+    } catch {
+      // Standalone frontend fallback on Vercel
+      let list = [...VERIFIED_SCHOLARSHIPS];
+      if (params?.category && params.category !== 'all') {
+        list = list.filter(s => s.category === params.category);
+      }
+      if (params?.search) {
+        const q = params.search.toLowerCase();
+        list = list.filter(s => s.name.toLowerCase().includes(q) || s.description.toLowerCase().includes(q) || s.provider.toLowerCase().includes(q));
+      }
+      return list;
+    }
+  },
+  getScholarship: async (id) => {
+    try {
+      const res = await api.get(`/scholarships/${id}`);
+      return res.data;
+    } catch {
+      // Standalone frontend fallback on Vercel
+      const found = VERIFIED_SCHOLARSHIPS.find(s => s.id === Number(id));
+      return found || VERIFIED_SCHOLARSHIPS[0];
+    }
+  },
+  saveScholarship: async (id) => {
+    try {
+      const res = await api.post(`/student/scholarships/${id}/save`);
+      return res.data;
+    } catch {
+      return clientStorage.saveScholarship(id);
+    }
+  },
+  unsaveScholarship: async (id) => {
+    try {
+      const res = await api.delete(`/student/scholarships/${id}/save`);
+      return res.data;
+    } catch {
+      return clientStorage.unsaveScholarship(id);
+    }
+  },
+  getSaved: async () => {
+    try {
+      const res = await api.get('/student/saved');
+      return res.data;
+    } catch {
+      return clientStorage.getSaved();
+    }
+  },
 };
+
+export default scholarshipService;
